@@ -1,0 +1,495 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap');
+
+:root {
+    --bg-color: #2C2A2E;
+    --frame-bg-color: #3E3B40;
+    --text-color: #D4D4D4;
+    --title-text-color: #E0E0E0;
+    --accent-color: #8B4513;
+    --accent-text-color: #FFFFFF;
+    --border-color: #4a474c;
+    --toast-bg: #1a1a1a;
+    --rgb-frame-bg: 62, 59, 64; 
+}
+
+body.light-mode {
+    --bg-color: #F8F8F8;
+    --frame-bg-color: #FFFFFF;
+    --text-color: #333333;
+    --title-text-color: #000000;
+    --accent-color: #D4AF37;
+    --accent-text-color: #2C2A2E;
+    --border-color: #E0E0E0;
+    --toast-bg: #FFFFFF;
+    --rgb-frame-bg: 255, 255, 255;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#welcome-panel {
+    display: contents;
+}
+
+#app-container {
+    width: 100%;
+    max-width: 450px;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-color);
+}
+
+#page-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    position: relative;
+    padding-bottom: 70px;
+}
+
+.page { display: none; padding: 15px; }
+.page.active { display: block; }
+
+/* *** NİHAİ GÜNCELLEME: Kusursuz ortalama için Grid yapısı *** */
+.header-container { 
+    display: grid;
+    grid-template-columns: 40px 1fr 40px; /* sol boşluk - başlık - sağ buton */
+    align-items: center; 
+    padding: 20px 15px 10px 15px;
+}
+.header-container h1 {
+    grid-column: 2; /* Başlığı ortadaki sütuna yerleştir */
+    color: var(--accent-color);
+}
+#theme-toggle-button { 
+    grid-column: 3; /* Tema butonunu sağdaki sütuna yerleştir */
+    background: none; 
+    border: 2px solid var(--frame-bg-color); 
+    border-radius: 50%; 
+    width: 40px; 
+    height: 40px; 
+    font-size: 1.4em; 
+    cursor: pointer; 
+    color: var(--accent-color); 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    padding: 0; 
+}
+h1, h2 { font-family: 'Garamond', 'Times New Roman', serif; color: var(--title-text-color); text-align: center; margin: 0; }
+
+h2.accent { color: var(--accent-color); }
+#filter-area { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+input[type="text"], select, textarea { width: 100%; padding: 12px; background-color: var(--frame-bg-color); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 5px; font-size: 1em; box-sizing: border-box; }
+textarea { resize: vertical; min-height: 80px; }
+.styled-button { padding: 12px; font-size: 1em; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; }
+.primary-button { background-color: var(--accent-color); color: var(--accent-text-color); }
+.secondary-button { background-color: var(--frame-bg-color); color: var(--accent-color); border: 1px solid var(--accent-color); }
+.save-note-container { text-align: center; }
+#save-note-button, #online-search-button { margin-top: 10px; }
+.perfume-card { background-color: var(--frame-bg-color); padding: 10px; margin-bottom: 10px; border-radius: 8px; display: flex; align-items: center; cursor: pointer; border: 1px solid var(--border-color); }
+.color-swatch { width: 6px; height: 50px; border-radius: 3px; margin-right: 15px; flex-shrink: 0; }
+.perfume-info h3 { margin: 0 0 5px 0; color: var(--title-text-color); font-size: 1.1em; }
+.perfume-info .stars { margin: 0; color: var(--accent-color); font-size: 0.9em; }
+#detail-page .header { display: flex; justify-content: space-between; align-items: center; }
+#detail-page .header-icons { display: flex; align-items: center; gap: 15px; }
+#detail-page .action-button { background: none; border: none; font-weight: bold; cursor: pointer; color: var(--text-color); display: flex; justify-content: center; align-items: center; padding: 5px; }
+#detail-page .back-button { font-size: 1.2em; color: var(--accent-color); padding: 5px 0; }
+#detail-page #detail-fav-button { font-size: 1.9em; opacity: 0.5; }
+#detail-page #detail-fav-button.active { opacity: 1; color: var(--accent-color); }
+#detail-page .share-button, #detail-page #add-to-list-button { color: var(--accent-color); }
+#detail-page .share-button svg, #detail-page #add-to-list-button svg { width: 28px; height: 28px; }
+#detail-page .perfume-title { margin-top: 20px; color: var(--title-text-color); font-family: 'Garamond', serif; font-size: 2em; text-align: center; }
+#detail-page .section-divider { border: 0; height: 1px; background-color: var(--border-color); margin: 25px 0; }
+#detail-page .section h4 { color: var(--accent-color); text-align: center; font-size: 1.2em; margin-bottom: 10px; }
+#bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 450px; left: 50%; transform: translateX(-50%); background-color: var(--frame-bg-color); display: flex; border-top: 1px solid var(--border-color); z-index: 10; }
+#bottom-nav button { background: none; border: none; color: var(--text-color); font-size: 1em; cursor: pointer; flex-grow: 1; height: 100%; padding: 8px 0; transition: background-color 0.2s; }
+#bottom-nav button:hover { background-color: rgba(255,255,255,0.05); }
+#bottom-nav button.active { color: var(--accent-color); font-weight: bold; }
+br.mobile-only { display: block; }
+#toast-notification, .modal-overlay { position: fixed; z-index: 1001; }
+.modal-overlay { top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; }
+.modal-content { background-color: var(--bg-color); padding: 20px; border-radius: 10px; width: 90%; max-width: 350px; box-shadow: 0 5px 25px rgba(0,0,0,0.3); }
+#toast-notification { bottom: 80px; left: 50%; transform: translateX(-50%); background-color: var(--toast-bg); color: var(--text-color); padding: 10px 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; visibility: hidden; transition: opacity 0.5s, visibility 0.5s; }
+#toast-notification.show { opacity: 1; visibility: visible; }
+.modal-content h4 { margin-top: 0; text-align: center; color: var(--title-text-color); }
+#modal-list-container { max-height: 40vh; overflow-y: auto; margin-bottom: 15px; }
+#modal-list-container button { display: block; width: 100%; text-align: left; background-color: var(--frame-bg-color); margin-bottom: 8px; color: var(--text-color); }
+#close-modal-button { width: 100%; }
+.notes-pyramid { text-align: center; }
+.notes-pyramid h5 { margin: 12px 0 5px 0; font-size: 0.9em; color: var(--accent-color); letter-spacing: 1px; opacity: 0.8; }
+.notes-pyramid p { margin: 0 0 10px 0; font-style: italic; }
+#quiz-page, #quiz-results-page { text-align: center; }
+#quiz-page .question-text { font-size: 1.5em; margin-bottom: 30px; color: var(--title-text-color); }
+#quiz-page .answer-options { display: flex; flex-direction: column; gap: 15px; }
+.answer-button { padding: 20px; font-size: 1.1em; background-color: var(--frame-bg-color); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 8px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; }
+.answer-button:hover { background-color: var(--accent-color); color: var(--accent-text-color); border-color: var(--accent-color); }
+#quiz-results-container { margin-top: 20px; }
+.contact-footer { text-align: center; padding: 20px 15px; margin-top: auto; border-top: 1px solid var(--border-color); font-size: 0.9em; color: var(--text-color); opacity: 0.7; }
+.contact-footer a { color: var(--accent-color); text-decoration: none; }
+.contact-footer a:hover { text-decoration: underline; }
+.list-detail-header { display: flex; align-items: center; margin-bottom: 20px; }
+.list-detail-back-button { font-size: 1.2em; color: var(--accent-color); }
+.list-detail-title { flex-grow: 1; text-align: center; margin: 0; }
+#create-list-form { display: flex; gap: 10px; margin-bottom: 20px; }
+#new-list-name-input { flex-grow: 1; }
+.list-entry { display: flex; justify-content: space-between; align-items: center; background-color: var(--frame-bg-color); padding: 15px; border-radius: 8px; margin-bottom: 10px; gap: 15px; }
+.list-info { flex-grow: 1; cursor: pointer; }
+.list-info h3 { margin: 0; font-size: 1.2em; color: var(--title-text-color); }
+.list-info .perfume-count { font-size: 0.9em; color: var(--text-color); opacity: 0.8; }
+.list-actions { display: flex; gap: 10px; align-items: center; }
+.list-actions button { background: none; border: none; cursor: pointer; font-size: 1.5em; padding: 5px; color: var(--text-color); opacity: 0.6; transition: opacity 0.2s; }
+.list-actions button:hover { opacity: 1; color: var(--accent-color); }
+
+.desktop-sidebar {
+    display: none;
+}
+
+#main-content, #global-footer {
+    display: none;
+}
+
+@media (min-width: 1200px) {
+    body {
+        background-image: url('background.jpg');
+        background-size: cover;
+        background-position: center center;
+        background-attachment: fixed;
+        box-sizing: border-box;
+        overflow-y: auto;
+    }
+    
+    #welcome-panel {
+        display: grid;
+        grid-template-columns: 1fr 450px 1fr;
+        align-items: stretch; 
+        gap: 50px;
+        width: 100%;
+        height: 100vh;
+        padding: 25px 50px;
+        box-sizing: border-box;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+    }
+    
+    #app-container {
+        grid-column: 2;
+        max-height: 850px;
+        border-radius: 24px;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        margin: 0;
+        background: rgba(var(--rgb-frame-bg), 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+    
+    body.light-mode #app-container,
+    body.light-mode .desktop-sidebar {
+        border: 1px solid var(--border-color);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    #bottom-nav {
+        order: -1; 
+        position: static;
+        transform: none;
+        max-width: 100%;
+        height: auto;
+        border-top: none;
+        border-bottom: 1px solid var(--border-color);
+        background-color: transparent;
+    }
+    #bottom-nav button { padding: 16px 0; font-size: 1.05em; font-weight: 500; }
+    #bottom-nav button.active { background-color: rgba(var(--rgb-frame-bg), 0.3); color: var(--title-text-color); }
+    br.mobile-only { display: none; }
+    #page-content { padding-bottom: 0; } 
+    .page { padding: 15px 20px 20px 20px; }
+ 
+    .desktop-sidebar {
+        display: flex;
+        flex-direction: column;
+        max-height: 850px;
+        padding: 30px;
+        background: rgba(var(--rgb-frame-bg), 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    
+    #desktop-sidebar-left { 
+        grid-column: 1; 
+        justify-self: end; 
+        justify-content: space-around; 
+    }
+    #desktop-sidebar-right { 
+        grid-column: 3; 
+        justify-self: start; 
+        justify-content: center;
+    }
+ 
+    .desktop-sidebar h3 { font-family: 'Garamond', 'Times New Roman', serif; color: var(--accent-color); margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; font-size: 1.5em; text-align: center; }
+    .sidebar-section { text-align: center; padding: 20px 0; }
+    .sidebar-section:first-child { padding-top: 0; }
+    .sidebar-section:last-child { padding-bottom: 0; }
+    .sidebar-section h4 { font-family: 'Garamond', 'Times New Roman', serif; font-size: 1.3em; margin-top: 0; margin-bottom: 10px; }
+    .desktop-sidebar p { font-size: 1.05em; line-height: 1.6; }
+    .desktop-sidebar strong { color: var(--title-text-color); }
+    .desktop-sidebar .sidebar-perfume-card { text-align: center; cursor: pointer; }
+    .desktop-sidebar .sidebar-perfume-card h4 { font-family: 'Garamond', 'Times New Roman', serif; font-size: 1.3em; }
+    .desktop-sidebar .sidebar-perfume-card p { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1em; padding: 0 10px; opacity: 0.9; }
+    .desktop-sidebar .sidebar-perfume-card:hover h4 { text-decoration: underline; }
+    
+    .recommendations-container { margin-top: 15px; }
+    .brand-perfume-recommendation {
+        display: flex;
+        align-items: center;
+        padding: 10px 5px;
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .brand-perfume-recommendation:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+    .brand-perfume-recommendation:last-child {
+        border-bottom: none;
+    }
+    .brand-perfume-recommendation .color-swatch {
+        height: 25px;
+        width: 4px;
+        margin-right: 12px;
+        flex-shrink: 0;
+    }
+    .brand-perfume-recommendation .recommendation-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    .brand-perfume-recommendation strong {
+        font-size: 0.95em;
+        font-weight: 500;
+        color: var(--title-text-color);
+    }
+    .brand-perfume-recommendation span {
+        font-size: 0.85em;
+        font-style: italic;
+        opacity: 0.8;
+    }
+
+
+    #main-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 30px;
+        padding: 50px;
+        max-width: 1400px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+        align-items: stretch;
+    }
+
+    .frosted-panel {
+        background: rgba(var(--rgb-frame-bg), 0.5); 
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-radius: 20px;
+        padding: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+        display: flex;
+        flex-direction: column;
+    }
+    
+    body.light-mode .frosted-panel {
+        background: rgba(var(--rgb-frame-bg), 0.75);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    .frosted-panel > h3 {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 1.8em;
+        font-weight: 600; 
+        color: var(--accent-color); 
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 20px;
+        flex-shrink: 0;
+    }
+    
+    #quiz-promo-panel {
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+    #quiz-promo-panel p {
+        font-size: 1.1em;
+        line-height: 1.6;
+        margin-bottom: 25px; 
+        max-width: 500px;
+    }
+
+    #promo-quiz-start-btn {
+        padding: 15px 30px;
+        font-size: 1.1em;
+        transition: transform 0.2s ease;
+    }
+
+    #promo-quiz-start-btn:hover {
+        transform: scale(1.05);
+    }
+    
+    #quiz-promo-panel .question-text {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 1.8em;
+        font-weight: 600;
+        color: var(--accent-color);
+    }
+    
+    #quiz-promo-panel .answer-options {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 10px; 
+    }
+
+    #quiz-promo-panel .answer-button {
+        padding: 15px;
+        font-size: 1em;
+    }
+
+    #weekly-picks-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 20px;
+    }
+    
+    #panel-quiz-results-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        flex-grow: 1;
+        align-content: center;
+    }
+
+    #panel-quiz-results-container .perfume-card {
+        padding: 10px;
+        margin-bottom: 0;
+        width: 100%;
+        background-color: transparent;
+        border: 1px solid var(--border-color);
+    }
+    #panel-quiz-results-container .perfume-card .perfume-info {
+        text-align: left;
+    }
+    #panel-quiz-results-container .perfume-card .perfume-info h3 {
+        font-size: 0.9em;
+        margin-bottom: 5px;
+        color: var(--title-text-color);
+    }
+    #panel-quiz-results-container .perfume-card .perfume-info .stars {
+        font-size: 0.8em;
+    }
+    #panel-quiz-results-container .perfume-card .color-swatch {
+        display: block; 
+        height: 40px; 
+        margin-right: 10px;
+    }
+
+    #weekly-picks-panel .perfume-card {
+        background-color: transparent;
+        border: none;
+        border-bottom: 1px solid var(--border-color);
+        border-radius: 0;
+        margin-bottom: 0;
+        padding: 12px 5px;
+    }
+    
+    #weekly-picks-panel .perfume-card h3 {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 1em;
+        font-weight: 500;
+        text-align: left;
+        color: var(--title-text-color);
+    }
+    
+    #weekly-picks-panel .perfume-card:nth-last-child(-n+2) {
+        border-bottom: none;
+    }
+
+    #global-footer {
+        display: block;
+        text-align: center;
+        padding: 40px 20px;
+        font-size: 0.9em;
+        opacity: 0.7;
+        color: var(--text-color);
+        background-color: rgba(var(--rgb-frame-bg), 0.3);
+    }
+
+    #global-footer p {
+        margin: 5px 0;
+    }
+
+    #global-footer a {
+        color: var(--accent-color);
+    }
+}
+
+/* --- YENİ: Gizlilik Politikası Sayfası Stilleri --- */
+#privacy-policy-page .policy-content {
+    padding: 10px 15px 30px 15px; /* Alt boşluğu artırdık */
+    text-align: left;
+    line-height: 1.6;
+}
+
+#privacy-policy-page .policy-content h3 {
+    color: var(--accent-color);
+    margin-top: 25px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 5px;
+    text-align: left;
+}
+
+#privacy-policy-page .policy-content ul {
+    list-style-position: inside;
+    padding-left: 0;
+}
+
+#privacy-policy-page .policy-content a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+#privacy-policy-page .policy-content a:hover {
+    text-decoration: underline;
+}
+
+#privacy-policy-page .header {
+    display: flex;
+    justify-content: flex-start; /* Geri butonunu sola yasla */
+    align-items: center;
+}
+
+/* Global footer linkleri için daha iyi bir görünüm */
+#global-footer p a, .contact-footer p a {
+    text-decoration: none;
+}
+#global-footer p a:hover, .contact-footer p a:hover {
+    text-decoration: underline;
+}
