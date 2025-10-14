@@ -40,13 +40,22 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentQuestionIndex = 0;
     let userProfileTags = [];
 
+    // --- YENİ: PWA ve İstatistik Değişkenleri ---
+    let deferredPrompt = null;
+    let searchHistory = [];
+    let userStats = { totalSearches: 0, favoritesAdded: 0, listsCreated: 0, quizzesTaken: 0 };
+    
     // --- VERİ YÖNETİMİ ---
     const loadData = () => {
         userLists = JSON.parse(localStorage.getItem('userPerfumeLists')) || { "Favorilerim": [] };
         personalNotes = JSON.parse(localStorage.getItem('perfumePersonalNotes')) || {};
+        searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+        userStats = JSON.parse(localStorage.getItem('userStats')) || { totalSearches: 0, favoritesAdded: 0, listsCreated: 0, quizzesTaken: 0 };
     };
     const saveLists = () => localStorage.setItem('userPerfumeLists', JSON.stringify(userLists));
     const saveNotes = () => localStorage.setItem('perfumePersonalNotes', JSON.stringify(personalNotes));
+    const saveSearchHistory = () => localStorage.setItem('searchHistory', JSON.stringify(searchHistory.slice(-10))); // Son 10 arama
+    const saveStats = () => localStorage.setItem('userStats', JSON.stringify(userStats));
 
     // --- SAYFA YÖNETİMİ ---
     const showPage = (pageId, fromHistory = false) => {
@@ -97,6 +106,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!list) return;
         list.innerHTML = '';
         const perfumesToDisplay = filterPerfumes();
+        
+        // Arama geçmişine ekle
+        const searchInput = document.getElementById('search-input');
+        if (searchInput && searchInput.value.trim()) {
+            addToSearchHistory(searchInput.value.trim());
+        }
+        
         if (perfumesToDisplay.length === 0) {
             list.innerHTML = '<p style="text-align:center; padding: 20px;">Bu kriterlere uygun parfüm bulunamadı.</p>';
         } else {
@@ -146,8 +162,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderMyListsPage = () => {
         const page = pages['my-lists-page'];
-        page.innerHTML = `<h2 class="accent" style="padding-top:15px;">📚 Listelerim</h2><div id="create-list-form"><input type="text" id="new-list-name-input" placeholder="Yeni Liste Adı..."><button id="create-list-button" class="styled-button primary-button">Oluştur</button></div><div id="custom-lists-container"></div>`;
+        page.innerHTML = `
+            <h2 class="accent" style="padding-top:15px;">📚 Listelerim</h2>
+            <div style="text-align:center;margin-bottom:15px;">
+                <button id="stats-button" class="styled-button secondary-button" style="margin:0 auto;">📊 İstatistiklerim</button>
+            </div>
+            <div id="create-list-form"><input type="text" id="new-list-name-input" placeholder="Yeni Liste Adı..."><button id="create-list-button" class="styled-button primary-button">Oluştur</button></div>
+            <div id="custom-lists-container"></div>
+        `;
         const container = page.querySelector('#custom-lists-container');
+        page.querySelector('#stats-button').onclick = renderStatsPage;
         const listNames = Object.keys(userLists);
         if (listNames.length === 0) {
             container.innerHTML = `<p style="text-align:center; padding: 20px;">Henüz hiç listeniz yok.</p>`;
@@ -298,6 +322,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (listName && !userLists.hasOwnProperty(listName)) {
             userLists[listName] = [];
             saveLists();
+            userStats.listsCreated++;
+            saveStats();
             renderMyListsPage();
             input.value = '';
             showToast(`'${listName}' listesi oluşturuldu!`);
@@ -351,6 +377,8 @@ document.addEventListener('DOMContentLoaded', () => {
             favList.splice(index, 1);
         } else {
             favList.push(perfumeName);
+            userStats.favoritesAdded++;
+            saveStats();
         }
         saveLists();
     };
@@ -413,6 +441,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const showQuizResults = () => {
         const page = pages['quiz-results-page'];
         const recommendedPerfumes = calculateQuizScores();
+        userStats.quizzesTaken++;
+        saveStats();
         page.innerHTML = `<h2 class="accent">🎉 Sana Özel Önerilerimiz!</h2><p>Verdiğin cevaplara göre koku profilinle en uyumlu parfümler:</p><div id="quiz-results-container"></div><button id="restart-quiz-button" class="styled-button secondary-button" style="margin-top: 20px;">Testi Yeniden Yap</button><button id="back-home-button" class="styled-button primary-button" style="margin-top: 10px;">Ana Sayfaya Dön</button>`;
         const container = page.querySelector('#quiz-results-container');
         if (recommendedPerfumes.length > 0) {
@@ -704,6 +734,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 setupPrivacyPage();
                 setupInteractiveQuiz();
                 renderWeeklyPicks();
+                setupPWAInstall();
+                handleShortcuts();
 
                 if (checkForSharedLink()) {
                 } else {
@@ -720,6 +752,111 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Veritabanı yüklenemedi:', error);
                 document.getElementById('results-list').innerHTML = '<p style="text-align:center; padding: 20px; color: red;">Parfüm veritabanı yüklenemedi. Dosyaların doğru yerde olduğundan emin olun.</p>';
             });
+    };
+
+    // --- YENİ ÖZELLİKLER ---
+    
+    // PWA Install Prompt
+    const setupPWAInstall = () => {
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // 3 saniye sonra install banner göster
+            setTimeout(() => {
+                if (deferredPrompt && !localStorage.getItem('pwaInstallDismissed')) {
+                    showInstallBanner();
+                }
+            }, 3000);
+        });
+
+        window.addEventListener('appinstalled', () => {
+            deferredPrompt = null;
+            showToast('✅ Uygulama başarıyla kuruldu!');
+        });
+    };
+
+    const showInstallBanner = () => {
+        const banner = document.createElement('div');
+        banner.id = 'install-banner';
+        banner.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--accent-color);color:var(--accent-text-color);padding:15px 20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.3);z-index:1000;max-width:90%;text-align:center;animation:slideUp 0.3s ease;';
+        banner.innerHTML = `
+            <p style="margin:0 0 10px 0;font-weight:bold;">📱 Ana Ekrana Ekle</p>
+            <p style="margin:0 0 15px 0;font-size:0.9em;">Uygulamayı telefonunuza kurun, daha hızlı erişin!</p>
+            <button id="install-btn" style="background:#fff;color:var(--accent-color);border:none;padding:10px 20px;border-radius:8px;font-weight:bold;margin-right:10px;cursor:pointer;">Kur</button>
+            <button id="dismiss-btn" style="background:transparent;color:#fff;border:1px solid #fff;padding:10px 20px;border-radius:8px;cursor:pointer;">Daha Sonra</button>
+        `;
+        document.body.appendChild(banner);
+
+        document.getElementById('install-btn').onclick = async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                banner.remove();
+            }
+        };
+
+        document.getElementById('dismiss-btn').onclick = () => {
+            localStorage.setItem('pwaInstallDismissed', 'true');
+            banner.remove();
+        };
+    };
+
+    // Shortcuts Handler
+    const handleShortcuts = () => {
+        const params = new URLSearchParams(window.location.search);
+        const action = params.get('action');
+        
+        if (action === 'surprise') {
+            const allPerfumes = Object.keys(parfum_veritabani);
+            const randomPerfume = allPerfumes[Math.floor(Math.random() * allPerfumes.length)];
+            renderDetailPage(randomPerfume);
+        }
+    };
+
+    // Arama Geçmişi
+    const addToSearchHistory = (term) => {
+        if (term && term.trim().length > 2) {
+            searchHistory = [term, ...searchHistory.filter(t => t !== term)].slice(0, 10);
+            saveSearchHistory();
+            userStats.totalSearches++;
+            saveStats();
+        }
+    };
+
+    // İstatistikler Sayfası (Listelerim'e eklenecek)
+    const renderStatsPage = () => {
+        const page = pages['my-lists-page'];
+        page.innerHTML = `
+            <div class="header">
+                <button class="back-button action-button" id="stats-back-btn">&lt; Geri</button>
+            </div>
+            <h2 class="accent" style="padding-top:15px;text-align:center;">📊 İstatistiklerim</h2>
+            <div style="padding:20px;">
+                <div style="background:var(--frame-bg-color);padding:15px;border-radius:8px;margin-bottom:15px;">
+                    <h3 style="margin:0 0 10px 0;color:var(--accent-color);">🔍 Toplam Arama</h3>
+                    <p style="font-size:2em;margin:0;font-weight:bold;">${userStats.totalSearches}</p>
+                </div>
+                <div style="background:var(--frame-bg-color);padding:15px;border-radius:8px;margin-bottom:15px;">
+                    <h3 style="margin:0 0 10px 0;color:var(--accent-color);">⭐ Favori Ekleme</h3>
+                    <p style="font-size:2em;margin:0;font-weight:bold;">${userStats.favoritesAdded}</p>
+                </div>
+                <div style="background:var(--frame-bg-color);padding:15px;border-radius:8px;margin-bottom:15px;">
+                    <h3 style="margin:0 0 10px 0;color:var(--accent-color);">📚 Oluşturulan Liste</h3>
+                    <p style="font-size:2em;margin:0;font-weight:bold;">${userStats.listsCreated}</p>
+                </div>
+                <div style="background:var(--frame-bg-color);padding:15px;border-radius:8px;margin-bottom:15px;">
+                    <h3 style="margin:0 0 10px 0;color:var(--accent-color);">🧬 Tamamlanan Test</h3>
+                    <p style="font-size:2em;margin:0;font-weight:bold;">${userStats.quizzesTaken}</p>
+                </div>
+                <div style="background:var(--frame-bg-color);padding:15px;border-radius:8px;">
+                    <h3 style="margin:0 0 10px 0;color:var(--accent-color);">🕐 Son Aramalar</h3>
+                    ${searchHistory.length > 0 ? searchHistory.map(term => `<p style="margin:5px 0;padding:8px;background:var(--bg-color);border-radius:5px;">${term}</p>`).join('') : '<p>Henüz arama yapmadınız.</p>'}
+                </div>
+            </div>
+        `;
+        page.querySelector('#stats-back-btn').onclick = renderMyListsPage;
     };
 
     init();

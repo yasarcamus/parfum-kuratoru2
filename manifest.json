@@ -1,11 +1,16 @@
 {
     "name": "Parfüm Küratörü",
     "short_name": "Parfüm Kür.",
-    "start_url": "index.html",
+    "start_url": "/?source=pwa",
     "display": "standalone",
+    "display_override": ["window-controls-overlay", "standalone", "fullscreen"],
     "background_color": "#2C2A2E",
     "theme_color": "#D4AF37",
-    "description": "Kişisel parfüm danışmanınız.",
+    "description": "Kişisel parfüm danışmanınız. Binlerce parfüm arasından size en uygun kokuyu bulun.",
+    "orientation": "portrait",
+    "dir": "ltr",
+    "lang": "tr",
+    "categories": ["lifestyle", "shopping", "personalization"],
     "icons": [
         {
             "src": "icon-192.png",
@@ -18,6 +23,48 @@
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Favorilerim",
+            "short_name": "Favoriler",
+            "description": "Favori parfümlerime git",
+            "url": "/?page=my-lists-page&source=shortcut",
+            "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+        },
+        {
+            "name": "Beni Şaşırt",
+            "short_name": "Şaşırt",
+            "description": "Rastgele parfüm öner",
+            "url": "/?action=surprise&source=shortcut",
+            "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+        },
+        {
+            "name": "Parfüm Testi",
+            "short_name": "Test",
+            "description": "Bana uygun parfümü bul",
+            "url": "/?page=quiz-page&source=shortcut",
+            "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+        }
+    ],
+    "share_target": {
+        "action": "/",
+        "method": "GET",
+        "enctype": "application/x-www-form-urlencoded",
+        "params": {
+            "title": "title",
+            "text": "text",
+            "url": "url"
+        }
+    },
+    "screenshots": [
+        {
+            "src": "icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Ana Sayfa"
         }
     ]
 }
