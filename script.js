@@ -164,8 +164,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const page = pages['my-lists-page'];
         page.innerHTML = `
             <h2 class="accent" style="padding-top:15px;">📚 Listelerim</h2>
-            <div style="text-align:center;margin-bottom:15px;">
-                <button id="stats-button" class="styled-button secondary-button" style="margin:0 auto;">📊 İstatistiklerim</button>
+            <div style="text-align:center;margin-bottom:20px;">
+                <button id="stats-button" class="styled-button secondary-button" style="margin:0 auto;padding:12px 20px;">📊 İstatistiklerim</button>
             </div>
             <div id="create-list-form"><input type="text" id="new-list-name-input" placeholder="Yeni Liste Adı..."><button id="create-list-button" class="styled-button primary-button">Oluştur</button></div>
             <div id="custom-lists-container"></div>

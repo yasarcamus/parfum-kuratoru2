@@ -114,16 +114,33 @@ h2.accent { color: var(--accent-color); }
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease;
 }
 #filter-toggle-btn:hover {
-    background-color: rgba(var(--rgb-frame-bg), 0.8);
+    background-color: var(--accent-color);
+    color: var(--accent-text-color);
+    border-color: var(--accent-color);
 }
 #filter-toggle-btn .arrow {
     transition: transform 0.3s ease;
 }
 #filter-toggle-btn.active .arrow {
     transform: rotate(180deg);
+}
+
+/* PC'de filtre butonu daha şık */
+@media (min-width: 1200px) {
+    #filter-toggle-btn {
+        background: linear-gradient(135deg, var(--frame-bg-color) 0%, rgba(var(--rgb-frame-bg), 0.8) 100%);
+        border: 2px solid var(--border-color);
+        padding: 14px 18px;
+        font-size: 1.05em;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    #filter-toggle-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
 }
 
 #filter-area { 
@@ -207,7 +224,8 @@ br.mobile-only { display: block; }
 .list-detail-title { flex-grow: 1; text-align: center; margin: 0; }
 #create-list-form { display: flex; gap: 10px; margin-bottom: 20px; }
 #new-list-name-input { flex-grow: 1; }
-.list-entry { display: flex; justify-content: space-between; align-items: center; background-color: var(--frame-bg-color); padding: 15px; border-radius: 8px; margin-bottom: 10px; gap: 15px; }
+.list-entry { display: flex; justify-content: space-between; align-items: center; background-color: var(--frame-bg-color); padding: 15px; border-radius: 8px; margin-bottom: 10px; gap: 15px; border: 1px solid var(--border-color); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.list-entry:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
 .list-info { flex-grow: 1; cursor: pointer; }
 .list-info h3 { margin: 0; font-size: 1.2em; color: var(--title-text-color); }
 .list-info .perfume-count { font-size: 0.9em; color: var(--text-color); opacity: 0.8; }
