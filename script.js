@@ -109,6 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!data) return;
         showPage('detail-page');
         
+        // URL'e perfume parametresini ekle
+        const url = new URL(window.location.href);
+        url.searchParams.set('perfume', encodeURIComponent(perfumeName.replace(/ /g, '_')));
+        history.replaceState({ page: 'detail-page', perfume: perfumeName }, '', url.toString());
+        
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
         const page = pages['detail-page'];
