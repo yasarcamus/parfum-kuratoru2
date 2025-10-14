@@ -58,24 +58,20 @@ body {
 .page { display: none; padding: 15px; }
 .page.active { display: block; }
 
-/* *** NİHAİ GÜNCELLEME: Kusursuz ortalama için Grid yapısı *** */
+/* *** Header: Ortalanmış başlık + sağda tema butonu *** */
 .header-container { 
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
     align-items: center; 
     padding: 20px 15px 10px 15px;
 }
 .header-container h1 {
-    flex: 1;
+    grid-column: 2;
     text-align: center;
     color: var(--accent-color);
 }
-.header-actions {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
 #theme-toggle-button { 
+    grid-column: 3;
     background: none; 
     border: 2px solid var(--frame-bg-color); 
     border-radius: 50%; 
@@ -87,8 +83,7 @@ body {
     display: flex; 
     justify-content: center; 
     align-items: center; 
-    padding: 0; 
-    flex-shrink: 0;
+    padding: 0;
 }
 h1, h2 { font-family: 'Garamond', 'Times New Roman', serif; color: var(--title-text-color); text-align: center; margin: 0; }
 
