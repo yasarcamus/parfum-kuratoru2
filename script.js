@@ -736,6 +736,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderWeeklyPicks();
                 setupPWAInstall();
                 handleShortcuts();
+                setupFilterAccordion();
 
                 if (checkForSharedLink()) {
                 } else {
@@ -817,6 +818,27 @@ document.addEventListener('DOMContentLoaded', () => {
             userStats.totalSearches++;
             saveStats();
         }
+    };
+
+    // Filtre Accordion
+    const setupFilterAccordion = () => {
+        const toggleBtn = document.getElementById('filter-toggle-btn');
+        const filterArea = document.getElementById('filter-area');
+        
+        if (!toggleBtn || !filterArea) return;
+        
+        // Başlangıçta açık
+        const isExpanded = localStorage.getItem('filterExpanded') !== 'false';
+        if (isExpanded) {
+            filterArea.classList.add('expanded');
+            toggleBtn.classList.add('active');
+        }
+        
+        toggleBtn.onclick = () => {
+            filterArea.classList.toggle('expanded');
+            toggleBtn.classList.toggle('active');
+            localStorage.setItem('filterExpanded', filterArea.classList.contains('expanded'));
+        };
     };
 
     // İstatistikler Sayfası (Listelerim'e eklenecek)

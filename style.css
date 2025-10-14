@@ -46,6 +46,7 @@ body {
     display: flex;
     flex-direction: column;
     background-color: var(--bg-color);
+    transition: opacity 0.3s ease;
 }
 
 #page-content {
@@ -55,8 +56,17 @@ body {
     padding-bottom: 70px;
 }
 
-.page { display: none; padding: 15px; }
+.page { 
+    display: none; 
+    padding: 15px;
+    animation: fadeIn 0.3s ease;
+}
 .page.active { display: block; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
 /* *** Header: Ortalanmış başlık + sağda tema butonu *** */
 .header-container { 
@@ -88,7 +98,46 @@ body {
 h1, h2 { font-family: 'Garamond', 'Times New Roman', serif; color: var(--title-text-color); text-align: center; margin: 0; }
 
 h2.accent { color: var(--accent-color); }
-#filter-area { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+
+/* Filtre Accordion */
+#filter-toggle-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--frame-bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--accent-color);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    transition: background-color 0.2s;
+}
+#filter-toggle-btn:hover {
+    background-color: rgba(var(--rgb-frame-bg), 0.8);
+}
+#filter-toggle-btn .arrow {
+    transition: transform 0.3s ease;
+}
+#filter-toggle-btn.active .arrow {
+    transform: rotate(180deg);
+}
+
+#filter-area { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 10px; 
+    margin-bottom: 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+#filter-area.expanded {
+    max-height: 600px;
+}
 input[type="text"], select, textarea { width: 100%; padding: 12px; background-color: var(--frame-bg-color); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 5px; font-size: 1em; box-sizing: border-box; }
 textarea { resize: vertical; min-height: 80px; }
 .styled-button { padding: 12px; font-size: 1em; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; }
@@ -96,7 +145,22 @@ textarea { resize: vertical; min-height: 80px; }
 .secondary-button { background-color: var(--frame-bg-color); color: var(--accent-color); border: 1px solid var(--accent-color); }
 .save-note-container { text-align: center; }
 #save-note-button, #online-search-button { margin-top: 10px; }
-.perfume-card { background-color: var(--frame-bg-color); padding: 10px; margin-bottom: 10px; border-radius: 8px; display: flex; align-items: center; cursor: pointer; border: 1px solid var(--border-color); }
+.perfume-card { 
+    background-color: var(--frame-bg-color); 
+    padding: 10px; 
+    margin-bottom: 10px; 
+    border-radius: 8px; 
+    display: flex; 
+    align-items: center; 
+    cursor: pointer; 
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.perfume-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-color: var(--accent-color);
+}
 .color-swatch { width: 6px; height: 50px; border-radius: 3px; margin-right: 15px; flex-shrink: 0; }
 .perfume-info h3 { margin: 0 0 5px 0; color: var(--title-text-color); font-size: 1.1em; }
 .perfume-info .stars { margin: 0; color: var(--accent-color); font-size: 0.9em; }
@@ -171,9 +235,9 @@ br.mobile-only { display: block; }
     
     #welcome-panel {
         display: grid;
-        grid-template-columns: 1fr 450px 1fr;
+        grid-template-columns: 1fr 550px 1fr;
         align-items: stretch; 
-        gap: 50px;
+        gap: 40px;
         width: 100%;
         height: 100vh;
         padding: 25px 50px;
@@ -185,15 +249,16 @@ br.mobile-only { display: block; }
     
     #app-container {
         grid-column: 2;
+        max-width: 550px;
         max-height: 850px;
         border-radius: 24px;
         box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
         border: 1px solid rgba(255, 255, 255, 0.1);
         overflow: hidden;
         margin: 0;
-        background: rgba(var(--rgb-frame-bg), 0.6);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        background: rgba(var(--rgb-frame-bg), 0.65);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
     }
     
     body.light-mode #app-container,
