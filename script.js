@@ -71,10 +71,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!fromHistory) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('page', pageId);
             if (isInitialLoad) {
-                history.replaceState({ page: pageId }, '', `#${pageId}`);
+                history.replaceState({ page: pageId }, '', url.toString());
             } else {
-                history.pushState({ page: pageId }, '', `#${pageId}`);
+                history.pushState({ page: pageId }, '', url.toString());
             }
         }
         isInitialLoad = false; 
@@ -457,6 +459,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return `hsl(${Math.abs(hash % 360)}, 65%, 85%)`;
     };
     
+    const debounce = (fn, delay = 200) => { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), delay); }; };
+    
     const showToast = (message) => {
         toast.textContent = message;
         toast.classList.add('show');
@@ -466,7 +470,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     const sharePerfume = (perfumeName) => {
-        const shareData = { title: 'Parfüm Küratörü', text: `Sana harika bir koku önerim var: ${perfumeName}`, url: window.location.href.split('#')[0] + '#perfume=' + encodeURIComponent(perfumeName.replace(/ /g, '_')) };
+        const base = window.location.origin + window.location.pathname;
+        const url = `${base}?page=detail-page&perfume=${encodeURIComponent(perfumeName.replace(/ /g, '_'))}`;
+        const shareData = { title: 'Parfüm Küratörü', text: `Sana harika bir koku önerim var: ${perfumeName}`, url };
         if (navigator.share) {
             navigator.share(shareData).catch(console.error);
         } else {
@@ -493,8 +499,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const checkForSharedLink = () => {
-        if (window.location.hash && window.location.hash.includes('#perfume=')) {
-            const perfumeName = decodeURIComponent(window.location.hash.substring(1).split('=')[1].replace(/_/g, ' '));
+        const params = new URLSearchParams(window.location.search);
+        let encoded = params.get('perfume');
+        if (!encoded && window.location.hash && window.location.hash.includes('#perfume=')) {
+            encoded = window.location.hash.substring(1).split('=')[1];
+        }
+        if (encoded) {
+            const perfumeName = decodeURIComponent(encoded.replace(/_/g, ' '));
             if (parfum_veritabani[perfumeName]) {
                 renderDetailPage(perfumeName);
                 return true;
@@ -630,7 +641,8 @@ document.addEventListener('DOMContentLoaded', () => {
         loadData();
 
         window.addEventListener('popstate', (event) => {
-            const pageId = (event.state && event.state.page) || 'home-page';
+            const params = new URLSearchParams(window.location.search);
+            const pageId = params.get('page') || 'home-page';
             showPage(pageId, true);
         });
 
@@ -651,7 +663,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('close-modal-button').onclick = closeAddToListModal;
                 document.getElementById('add-to-list-modal').onclick = (e) => { if (e.target.id === 'add-to-list-modal') closeAddToListModal(); };
                 
-                document.getElementById('sort-select').addEventListener('change', renderPerfumes);
+                const debouncedRender = debounce(renderPerfumes, 200);
+                document.getElementById('sort-select').addEventListener('change', debouncedRender);
+                const genderSel = document.getElementById('gender-select');
+                const seasonSel = document.getElementById('season-select');
+                const usageSel = document.getElementById('usage-select');
+                const scentSel = document.getElementById('scent-type-select');
+                genderSel && genderSel.addEventListener('change', debouncedRender);
+                seasonSel && seasonSel.addEventListener('change', debouncedRender);
+                usageSel && usageSel.addEventListener('change', debouncedRender);
+                scentSel && scentSel.addEventListener('change', debouncedRender);
+
+                const searchInput = document.getElementById('search-input');
+                if (searchInput) {
+                    searchInput.addEventListener('input', debouncedRender);
+                    searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); renderPerfumes(); } });
+                }
 
                 document.getElementById('privacy-link-mobile').onclick = (e) => { e.preventDefault(); showPage('privacy-policy-page'); };
                 document.getElementById('privacy-link-desktop').onclick = (e) => { e.preventDefault(); showPage('privacy-policy-page'); };
@@ -665,7 +692,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if ('serviceWorker' in navigator) {
                     window.addEventListener('load', () => {
-                        navigator.serviceWorker.register('./servis-calisani.js').then(reg => console.log('Servis Çalışanı kaydedildi.')).catch(err => console.log('Servis Çalışanı hatası:', err));
+                        navigator.serviceWorker.register('/servis-calisani.js').then(reg => console.log('Servis Çalışanı kaydedildi.')).catch(err => console.log('Servis Çalışanı hatası:', err));
                     });
                 }
                 setupThemeToggle();
@@ -675,9 +702,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (checkForSharedLink()) {
                 } else {
-                    const initialPageFromHash = window.location.hash.substring(1);
-                    if (pages[initialPageFromHash]) {
-                        showPage(initialPageFromHash);
+                    const params = new URLSearchParams(window.location.search);
+                    const initialPage = params.get('page');
+                    if (initialPage && pages[initialPage]) {
+                        showPage(initialPage);
                     } else {
                         showPage('home-page');
                     }
