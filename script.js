@@ -758,20 +758,40 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // PWA Install Prompt
     const setupPWAInstall = () => {
+        const installButton = document.getElementById('install-app-button');
+        
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             
-            // 3 saniye sonra install banner göster
-            setTimeout(() => {
-                if (deferredPrompt && !localStorage.getItem('pwaInstallDismissed')) {
-                    showInstallBanner();
-                }
-            }, 3000);
+            // Desktop için buton göster
+            if (window.innerWidth >= 1200 && installButton) {
+                installButton.style.display = 'block';
+                installButton.onclick = async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        if (outcome === 'accepted') {
+                            installButton.style.display = 'none';
+                        }
+                        deferredPrompt = null;
+                    }
+                };
+            }
+            
+            // Mobil için 3 saniye sonra banner göster
+            if (window.innerWidth < 1200) {
+                setTimeout(() => {
+                    if (deferredPrompt && !localStorage.getItem('pwaInstallDismissed')) {
+                        showInstallBanner();
+                    }
+                }, 3000);
+            }
         });
 
         window.addEventListener('appinstalled', () => {
             deferredPrompt = null;
+            if (installButton) installButton.style.display = 'none';
             showToast('✅ Uygulama başarıyla kuruldu!');
         });
     };

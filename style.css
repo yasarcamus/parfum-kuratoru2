@@ -60,17 +60,22 @@ body {
 
 /* *** NİHAİ GÜNCELLEME: Kusursuz ortalama için Grid yapısı *** */
 .header-container { 
-    display: grid;
-    grid-template-columns: 40px 1fr 40px; /* sol boşluk - başlık - sağ buton */
+    display: flex;
+    justify-content: space-between;
     align-items: center; 
     padding: 20px 15px 10px 15px;
 }
 .header-container h1 {
-    grid-column: 2; /* Başlığı ortadaki sütuna yerleştir */
+    flex: 1;
+    text-align: center;
     color: var(--accent-color);
 }
+.header-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
 #theme-toggle-button { 
-    grid-column: 3; /* Tema butonunu sağdaki sütuna yerleştir */
     background: none; 
     border: 2px solid var(--frame-bg-color); 
     border-radius: 50%; 
@@ -83,6 +88,7 @@ body {
     justify-content: center; 
     align-items: center; 
     padding: 0; 
+    flex-shrink: 0;
 }
 h1, h2 { font-family: 'Garamond', 'Times New Roman', serif; color: var(--title-text-color); text-align: center; margin: 0; }
 
@@ -99,10 +105,11 @@ textarea { resize: vertical; min-height: 80px; }
 .color-swatch { width: 6px; height: 50px; border-radius: 3px; margin-right: 15px; flex-shrink: 0; }
 .perfume-info h3 { margin: 0 0 5px 0; color: var(--title-text-color); font-size: 1.1em; }
 .perfume-info .stars { margin: 0; color: var(--accent-color); font-size: 0.9em; }
-#detail-page .header { display: flex; justify-content: space-between; align-items: center; }
+#detail-page .header, #privacy-policy-page .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
 #detail-page .header-icons { display: flex; align-items: center; gap: 15px; }
-#detail-page .action-button { background: none; border: none; font-weight: bold; cursor: pointer; color: var(--text-color); display: flex; justify-content: center; align-items: center; padding: 5px; }
-#detail-page .back-button { font-size: 1.2em; color: var(--accent-color); padding: 5px 0; }
+.action-button { background: none; border: none; font-weight: bold; cursor: pointer; color: var(--text-color); display: flex; justify-content: center; align-items: center; padding: 8px 12px; transition: background-color 0.2s; border-radius: 8px; }
+.action-button:hover { background-color: rgba(var(--rgb-frame-bg), 0.5); }
+.back-button { font-size: 1.1em; color: var(--accent-color); }
 #detail-page #detail-fav-button { font-size: 1.9em; opacity: 0.5; }
 #detail-page #detail-fav-button.active { opacity: 1; color: var(--accent-color); }
 #detail-page .share-button, #detail-page #add-to-list-button { color: var(--accent-color); }
