@@ -2,6 +2,8 @@
     "name": "Parfüm Küratörü",
     "short_name": "Parfüm Kür.",
     "start_url": "/?source=pwa",
+    "id": "/?source=pwa",
+    "scope": "/",
     "display": "standalone",
     "display_override": ["window-controls-overlay", "standalone", "fullscreen"],
     "background_color": "#2C2A2E",
