@@ -1,9 +1,12 @@
 {
   "name": "kurator-w-windsurf",
   "version": "1.0.0",
-  "main": "script.js",
+  "main": "src/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest"
   },
   "repository": {
     "type": "git",
@@ -18,6 +21,9 @@
   "homepage": "https://github.com/yasarcamus/parfum-kuratoru2#readme",
   "description": "",
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "jsdom": "^25.0.1",
+    "vite": "^6.0.1",
+    "vitest": "^2.1.5"
   }
 }
