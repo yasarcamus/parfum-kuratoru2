@@ -816,6 +816,20 @@ export const setupUI = () => {
     window.addEventListener('languageChanged', () => {
         translatePage();
         translateUI();
+
+        // Re-translate detail page if it's currently visible
+        const detailPage = document.getElementById('detail-page');
+        if (detailPage && detailPage.classList.contains('active')) {
+            const perfumeTitle = detailPage.querySelector('.perfume-title');
+            if (perfumeTitle && perfumeTitle.textContent) {
+                // Re-render detail page with new language
+                renderDetailPage(perfumeTitle.textContent);
+            }
+        }
+
+        // Re-render sidebars with new language
+        renderLeftSidebar();
+        renderRightSidebar();
     });
 };
 
