@@ -288,7 +288,14 @@ export const renderDetailPage = async (perfumeName) => {
     page.querySelector('#personal-note-input').value = state.personalNotes[perfumeName] || '';
     page.querySelector('#save-note-button').onclick = () => saveNote(perfumeName);
     page.querySelector('.share-button').onclick = () => sharePerfume(perfumeName);
-    page.querySelector('.back-button').onclick = () => showPage(lastPage);
+    page.querySelector('.back-button').onclick = () => {
+        // If came from quiz results, go back there
+        if (window.fromQuizResults) {
+            showPage('quiz-results-page');
+        } else {
+            showPage(lastPage);
+        }
+    };
     page.querySelector('#online-search-button').onclick = () => {
         const searchQuery = encodeURIComponent(`${perfumeName} parfüm satın al`);
         window.open(`https://www.google.com/search?q=${searchQuery}`, '_blank');

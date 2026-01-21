@@ -305,6 +305,14 @@ const renderQuestion = () => {
     const progress = Math.round(((currentQuestionIndex) / questions.length) * 100);
 
     page.innerHTML = `
+        <div class="quiz-header-bar">
+            <select id="quiz-language-select" class="quiz-lang-btn">
+                <option value="tr" ${getCurrentLanguage() === 'tr' ? 'selected' : ''}>🇹🇷 TR</option>
+                <option value="en" ${getCurrentLanguage() === 'en' ? 'selected' : ''}>🇬🇧 EN</option>
+                <option value="ru" ${getCurrentLanguage() === 'ru' ? 'selected' : ''}>🇷🇺 RU</option>
+                <option value="ar" ${getCurrentLanguage() === 'ar' ? 'selected' : ''}>🇸🇦 AR</option>
+            </select>
+        </div>
         <div class="quiz-progress">
             <div class="quiz-progress-bar" style="width: ${progress}%"></div>
             <span class="quiz-progress-text">${currentQuestionIndex + 1} / ${questions.length}</span>
@@ -312,6 +320,17 @@ const renderQuestion = () => {
         <p class="question-text">${questionData.question}</p>
         <div class="answer-options"></div>
     `;
+
+    // Language selector handler
+    const langSelect = page.querySelector('#quiz-language-select');
+    if (langSelect) {
+        langSelect.onchange = (e) => {
+            import('./i18n.js').then(module => {
+                module.setLanguage(e.target.value);
+                renderQuestion(); // Re-render with new language
+            });
+        };
+    }
 
     const optionsContainer = page.querySelector('.answer-options');
     questionData.answers.forEach(answer => {
@@ -338,47 +357,70 @@ const selectAnswer = (tags) => {
 const showQuizResults = () => {
     const page = document.getElementById('quiz-results-page');
     const recommendedPerfumes = calculateQuizScores();
+    const storeMode = isStoreMode();
 
     state.userStats.quizzesTaken++;
     saveStats();
 
+    // Store results for back navigation
+    window.lastQuizResults = recommendedPerfumes;
+    window.fromQuizResults = true;
+
+    // Enhanced results page with celebration design
     page.innerHTML = `
-        <h2 class="accent">${t('quizResultsTitle')}</h2>
-        <p>${t('quizResultsDescription')}</p>
-        <div id="quiz-results-container"></div>
-        <button id="restart-quiz-button" class="styled-button secondary-button" style="margin-top: 20px;">${t('restartQuiz')}</button>
-        <button id="back-home-button" class="styled-button primary-button" style="margin-top: 10px;">${t('backToHome')}</button>
+        <div class="quiz-results-header">
+            <div class="confetti-container">
+                <span class="confetti">🎉</span>
+                <span class="confetti">✨</span>
+                <span class="confetti">🌟</span>
+            </div>
+            <h2 class="results-title">${storeMode ? '🎁 Senin İçin Seçtik!' : t('quizResultsTitle')}</h2>
+            <p class="results-subtitle">${storeMode ? 'Koku profiline en uygun parfümler' : t('quizResultsDescription')}</p>
+        </div>
+        <div id="quiz-results-container" class="results-grid"></div>
+        <div class="results-actions">
+            <button id="restart-quiz-button" class="styled-button secondary-button">
+                🔄 ${t('restartQuiz')}
+            </button>
+            <button id="back-home-button" class="styled-button primary-button">
+                🏠 ${t('backToHome')}
+            </button>
+        </div>
     `;
 
     const container = page.querySelector('#quiz-results-container');
 
     if (recommendedPerfumes.length > 0) {
-        const storeMode = isStoreMode();
-
-        recommendedPerfumes.forEach(result => {
-            const card = document.createElement('div');
-            card.className = 'quiz-result-card';
-
-            // Create perfume card with match percentage
+        recommendedPerfumes.forEach((result, index) => {
             const perfumeCardWrapper = document.createElement('div');
             perfumeCardWrapper.className = 'quiz-result-wrapper';
             perfumeCardWrapper.style.cursor = 'pointer';
+            perfumeCardWrapper.style.animationDelay = `${index * 0.15}s`;
 
+            // Match percentage badge
             const matchBadge = document.createElement('div');
             matchBadge.className = 'match-badge';
-            matchBadge.innerHTML = `<span class="match-percent">${result.percentage}%</span><span class="match-label">${t('matchPercentage', { percent: result.percentage }).split('%')[0]}</span>`;
-
+            matchBadge.innerHTML = `
+                <span class="match-percent">${result.percentage}%</span>
+                <span class="match-label">Uyum</span>
+            `;
             perfumeCardWrapper.appendChild(matchBadge);
 
             if (storeMode && result.isStoreItem) {
-                // Hybrid display: Store name + Reference
+                // Enhanced store card
                 const storeCard = document.createElement('div');
                 storeCard.className = 'store-perfume-card';
                 storeCard.innerHTML = `
-                    <div class="store-name">${result.storeName}</div>
-                    <div class="store-reference">İlham: ${result.reference}</div>
-                    <div class="store-gender">${result.gender === 'erkek' ? '👔 Erkek' : result.gender === 'kadın' ? '👗 Kadın' : '✨ Unisex'}</div>
-                    <div class="store-vibe">${state.parfum_veritabani[result.name]?.vibe?.substring(0, 80) || ''}...</div>
+                    <div class="store-card-inner">
+                        <div class="store-name">${result.storeName}</div>
+                        <div class="store-divider"></div>
+                        <div class="store-reference">İlham: ${result.reference}</div>
+                        <div class="store-meta">
+                            <span class="store-gender">${result.gender === 'erkek' ? '👔 Erkek' : result.gender === 'kadın' ? '👗 Kadın' : '✨ Unisex'}</span>
+                        </div>
+                        <div class="store-vibe">"${state.parfum_veritabani[result.name]?.vibe?.substring(0, 60) || ''}..."</div>
+                        <div class="store-cta">👆 Detaylar için dokun</div>
+                    </div>
                 `;
                 perfumeCardWrapper.appendChild(storeCard);
 
@@ -396,11 +438,17 @@ const showQuizResults = () => {
             container.appendChild(perfumeCardWrapper);
         });
     } else {
-        container.innerHTML = `<p>${t('noResults')}</p>`;
+        container.innerHTML = `<p class="no-results">${t('noResults')}</p>`;
     }
 
-    page.querySelector('#restart-quiz-button').onclick = startQuiz;
-    page.querySelector('#back-home-button').onclick = () => showPage('home-page');
+    page.querySelector('#restart-quiz-button').onclick = () => {
+        window.fromQuizResults = false;
+        startQuiz();
+    };
+    page.querySelector('#back-home-button').onclick = () => {
+        window.fromQuizResults = false;
+        showPage('home-page');
+    };
     showPage('quiz-results-page');
 };
 
