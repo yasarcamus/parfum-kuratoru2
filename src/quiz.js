@@ -17,22 +17,32 @@ const TAG_WEIGHTS = {
 
 // Store inventory - perfumes available in physical store
 // When accessed via QR code (?store=true), only these will be recommended
+// Each item has: storeName (custom name), reference (original perfume), gender
 const STORE_INVENTORY = [
-    "Torino 21",
-    "Dior Homme Sport",
-    "Aqua Celestia",
-    "Wild Bluebell",
-    "Dior Sauvage",
-    "Eros",
-    "Stronger With You",
-    "Kirke",
-    "Creed Aventus",
-    "Baccarat Rouge 540",
-    "Lost Cherry",
-    "Libre",
-    "Victoria's Secret Bombshell",
-    "Eilish"
+    { storeName: "TORINO", reference: "Xerjoff Torino 21", gender: "unisex", dbName: "Xerjoff Torino 21" },
+    { storeName: "SPORT", reference: "Dior Homme Sport", gender: "erkek", dbName: "Dior Homme Sport" },
+    { storeName: "CELESTIA", reference: "Maison Francis Kurkdjian Aqua Celestia", gender: "unisex", dbName: "Aqua Celestia" },
+    { storeName: "BLUEBELL", reference: "Jo Malone Wild Bluebell", gender: "kadın", dbName: "Jo Malone Wild Bluebell" },
+    { storeName: "SAVAGE", reference: "Dior Sauvage", gender: "erkek", dbName: "Dior Sauvage" },
+    { storeName: "EROS", reference: "Versace Eros", gender: "erkek", dbName: "Versace Eros" },
+    { storeName: "STRONGER", reference: "Emporio Armani Stronger With You", gender: "erkek", dbName: "Stronger With You" },
+    { storeName: "KIRKE", reference: "Tiziana Terenzi Kirke", gender: "unisex", dbName: "Kirke" },
+    { storeName: "AVENTUS", reference: "Creed Aventus", gender: "erkek", dbName: "Creed Aventus" },
+    { storeName: "ROUGE", reference: "Maison Francis Kurkdjian Baccarat Rouge 540", gender: "unisex", dbName: "Baccarat Rouge 540" },
+    { storeName: "CHERRY", reference: "Tom Ford Lost Cherry", gender: "unisex", dbName: "Lost Cherry" },
+    { storeName: "LIBRE", reference: "Yves Saint Laurent Libre", gender: "kadın", dbName: "Libre" },
+    { storeName: "BOMBSHELL", reference: "Victoria's Secret Bombshell", gender: "kadın", dbName: "Victoria's Secret Bombshell" },
+    { storeName: "EILISH", reference: "Billie Eilish Eilish", gender: "kadın", dbName: "Eilish" }
 ];
+
+// Get store item by database name
+const getStoreItem = (dbName) => {
+    return STORE_INVENTORY.find(item =>
+        item.dbName === dbName ||
+        dbName.includes(item.dbName) ||
+        item.dbName.includes(dbName)
+    );
+};
 
 // Check if we're in store mode (QR code access)
 const isStoreMode = () => {
@@ -226,22 +236,45 @@ const calculateQuizScores = () => {
     const results = [];
     const storeMode = isStoreMode();
 
-    // Get the list of perfumes to consider
-    const perfumeNames = storeMode
-        ? STORE_INVENTORY.filter(name => state.parfum_veritabani[name]) // Only store inventory
-        : Object.keys(state.parfum_veritabani); // All perfumes
+    if (storeMode) {
+        // Store mode: only consider perfumes in inventory
+        STORE_INVENTORY.forEach(storeItem => {
+            // Find matching perfume in database
+            const perfumeName = Object.keys(state.parfum_veritabani).find(name =>
+                name.includes(storeItem.dbName) ||
+                storeItem.dbName.includes(name) ||
+                name === storeItem.dbName
+            );
 
-    perfumeNames.forEach(perfumeName => {
-        const perfume = state.parfum_veritabani[perfumeName];
-        if (!perfume) return;
+            if (perfumeName) {
+                const perfume = state.parfum_veritabani[perfumeName];
+                const scoreData = calculatePerfumeScore(perfume);
 
-        const scoreData = calculatePerfumeScore(perfume);
-
-        results.push({
-            name: perfumeName,
-            ...scoreData
+                results.push({
+                    name: perfumeName,
+                    storeName: storeItem.storeName,
+                    reference: storeItem.reference,
+                    gender: storeItem.gender,
+                    isStoreItem: true,
+                    ...scoreData
+                });
+            }
         });
-    });
+    } else {
+        // Normal mode: all perfumes
+        Object.keys(state.parfum_veritabani).forEach(perfumeName => {
+            const perfume = state.parfum_veritabani[perfumeName];
+            if (!perfume) return;
+
+            const scoreData = calculatePerfumeScore(perfume);
+
+            results.push({
+                name: perfumeName,
+                isStoreItem: false,
+                ...scoreData
+            });
+        });
+    }
 
     // Sort by score descending
     results.sort((a, b) => b.score - a.score);
@@ -320,6 +353,8 @@ const showQuizResults = () => {
     const container = page.querySelector('#quiz-results-container');
 
     if (recommendedPerfumes.length > 0) {
+        const storeMode = isStoreMode();
+
         recommendedPerfumes.forEach(result => {
             const card = document.createElement('div');
             card.className = 'quiz-result-card';
@@ -327,15 +362,38 @@ const showQuizResults = () => {
             // Create perfume card with match percentage
             const perfumeCardWrapper = document.createElement('div');
             perfumeCardWrapper.className = 'quiz-result-wrapper';
+            perfumeCardWrapper.style.cursor = 'pointer';
 
             const matchBadge = document.createElement('div');
             matchBadge.className = 'match-badge';
             matchBadge.innerHTML = `<span class="match-percent">${result.percentage}%</span><span class="match-label">${t('matchPercentage', { percent: result.percentage }).split('%')[0]}</span>`;
 
             perfumeCardWrapper.appendChild(matchBadge);
-            container.appendChild(perfumeCardWrapper);
 
-            createPerfumeCard(result.name, perfumeCardWrapper);
+            if (storeMode && result.isStoreItem) {
+                // Hybrid display: Store name + Reference
+                const storeCard = document.createElement('div');
+                storeCard.className = 'store-perfume-card';
+                storeCard.innerHTML = `
+                    <div class="store-name">${result.storeName}</div>
+                    <div class="store-reference">İlham: ${result.reference}</div>
+                    <div class="store-gender">${result.gender === 'erkek' ? '👔 Erkek' : result.gender === 'kadın' ? '👗 Kadın' : '✨ Unisex'}</div>
+                    <div class="store-vibe">${state.parfum_veritabani[result.name]?.vibe?.substring(0, 80) || ''}...</div>
+                `;
+                perfumeCardWrapper.appendChild(storeCard);
+
+                // Click to open detail page
+                perfumeCardWrapper.onclick = () => {
+                    import('./ui.js').then(module => {
+                        module.renderDetailPage(result.name);
+                    });
+                };
+            } else {
+                // Normal display
+                createPerfumeCard(result.name, perfumeCardWrapper);
+            }
+
+            container.appendChild(perfumeCardWrapper);
         });
     } else {
         container.innerHTML = `<p>${t('noResults')}</p>`;

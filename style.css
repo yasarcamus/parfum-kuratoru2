@@ -1316,3 +1316,54 @@ html[dir="rtl"] .sidebar-perfume-img {
     opacity: 0.7;
     font-style: italic;
 }
+
+/* Store Mode Perfume Cards */
+.store-perfume-card {
+    background: linear-gradient(135deg, var(--frame-bg-color) 0%, rgba(var(--rgb-frame-bg), 0.8) 100%);
+    border: 2px solid var(--accent-color);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    margin-top: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.store-perfume-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.store-name {
+    font-size: 2em;
+    font-weight: bold;
+    color: var(--accent-color);
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.store-reference {
+    font-size: 0.9em;
+    color: var(--text-color);
+    opacity: 0.8;
+    margin-bottom: 12px;
+    font-style: italic;
+}
+
+.store-gender {
+    display: inline-block;
+    background: var(--accent-color);
+    color: var(--accent-text-color);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    margin-bottom: 12px;
+}
+
+.store-vibe {
+    font-size: 0.9em;
+    color: var(--text-color);
+    opacity: 0.9;
+    line-height: 1.5;
+    font-style: italic;
+}
