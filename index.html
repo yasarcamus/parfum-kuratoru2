@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html lang="tr" dir="ltr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Parfüm Küratörü - Kişisel Koku Keşfi ve Parfüm Önerileri</title>
-    <meta name="description" content="Parfüm Küratörü ile size en uygun parfümü keşfedin. Koku türüne, mevsime ve kullanım alanına göre parfümleri filtreleyin, favori listenizi oluşturun.">
+    <meta name="description"
+        content="Parfüm Küratörü ile size en uygun parfümü keşfedin. Koku türüne, mevsime ve kullanım alanına göre parfümleri filtreleyin, favori listenizi oluşturun.">
     <meta name="keywords" content="parfüm, koku, parfüm önerisi, parfüm bul, koku testi, parfüm notaları">
-    
+
     <link rel="icon" href="icon-192.png" type="image/png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#D4AF37">
+    <meta name="google" content="notranslate">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="style.css?v=1.2">
+
+    <link rel="stylesheet" href="style.css?v=1.3">
 </head>
+
 <body>
 
     <div id="welcome-panel">
         <div id="desktop-sidebar-left" class="desktop-sidebar">
-            </div>
+        </div>
 
         <div id="app-container">
             <div class="header-container">
@@ -31,7 +35,8 @@
             </div>
 
             <nav id="bottom-nav">
-                <button id="nav-home" class="active" aria-label="Ana Sayfa">🔍<br class="mobile-only"> Ana Sayfa</button>
+                <button id="nav-home" class="active" aria-label="Ana Sayfa">🔍<br class="mobile-only"> Ana
+                    Sayfa</button>
                 <button id="nav-lists" aria-label="Listelerim">📚<br class="mobile-only"> Listelerim</button>
             </nav>
 
@@ -42,7 +47,8 @@
                         <span class="arrow">▼</span>
                     </button>
                     <div id="filter-area">
-                        <input type="text" id="search-input" placeholder="Parfüm, nota, hikaye ara..." aria-label="Parfüm Ara">
+                        <input type="text" id="search-input" placeholder="Parfüm, nota, hikaye ara..."
+                            aria-label="Parfüm Ara">
                         <select id="gender-select" aria-label="Cinsiyet Seçimi"></select>
                         <select id="season-select" aria-label="Mevsim Seçimi"></select>
                         <select id="usage-select" aria-label="Kullanım Alanı Seçimi"></select>
@@ -55,13 +61,15 @@
                         </select>
                         <button id="search-button" class="styled-button primary-button">✨ Koku Avına Başla</button>
                         <button id="surprise-button" class="styled-button secondary-button">🎲 Beni Şaşırt!</button>
-                        <button id="start-quiz-button" class="styled-button primary-button">🧬 Sana Uygun Parfümü Bul</button>
+                        <button id="start-quiz-button" class="styled-button primary-button">🧬 Sana Uygun Parfümü
+                            Bul</button>
                     </div>
                     <div id="recently-viewed-section" class="recently-viewed-section"></div>
                     <div id="results-list" aria-live="polite"></div>
                     <footer class="contact-footer">
-                        <p>Bize Ulaşın: 
-                            <a href="https://www.instagram.com/parfumkuratoru" target="_blank" rel="noopener noreferrer">Instagram</a> | 
+                        <p>Bize Ulaşın:
+                            <a href="https://www.instagram.com/parfumkuratoru" target="_blank"
+                                rel="noopener noreferrer">Instagram</a> |
                             <a href="mailto:parfumkuratoru@gmail.com">parfumkuratoru@gmail.com</a>
                         </p>
                         <p>
@@ -75,34 +83,61 @@
                     <div class="header">
                         <button class="back-button action-button" aria-label="Geri">&lt; Geri</button>
                         <div class="header-icons">
-                            <button class="share-button action-button" title="Paylaş" aria-label="Paylaş"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg></button>
-                            <button id="detail-fav-button" class="action-button" title="Favorilere Ekle" aria-label="Favorilere Ekle">★</button>
-                            <button id="add-to-list-button" class="action-button" title="Listeye Ekle" aria-label="Listeye Ekle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg></button>
+                            <button class="share-button action-button" title="Paylaş" aria-label="Paylaş"><svg
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                                    <polyline points="16 6 12 2 8 6"></polyline>
+                                    <line x1="12" y1="2" x2="12" y2="15"></line>
+                                </svg></button>
+                            <button id="detail-fav-button" class="action-button" title="Favorilere Ekle"
+                                aria-label="Favorilere Ekle">★</button>
+                            <button id="add-to-list-button" class="action-button" title="Listeye Ekle"
+                                aria-label="Listeye Ekle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                                </svg></button>
                         </div>
                     </div>
                     <div class="content">
                         <h2 class="perfume-title">Parfüm Adı</h2>
                         <p class="perfume-stars"></p>
                         <hr class="section-divider">
-                        <div class="section"> <h4>--- His (Vibe) ---</h4> <p class="vibe"></p> </div>
+                        <div class="section">
+                            <h4>--- His (Vibe) ---</h4>
+                            <p class="vibe"></p>
+                        </div>
                         <hr class="section-divider">
-                        <div class="section"> <h4>--- Hikayesi ---</h4> <p class="story"></p> </div>
+                        <div class="section">
+                            <h4>--- Hikayesi ---</h4>
+                            <p class="story"></p>
+                        </div>
                         <hr class="section-divider">
-                        <div class="section"> <h4>--- Notalar ---</h4> <div class="notes"></div> </div>
+                        <div class="section">
+                            <h4>--- Notalar ---</h4>
+                            <div class="notes"></div>
+                        </div>
                         <hr class="section-divider">
                         <div class="section">
                             <h4>--- Kişisel Notlarım ---</h4>
-                            <textarea id="personal-note-input" placeholder="Bu parfümle ilgili düşüncelerin..." aria-label="Kişisel Not"></textarea>
-                            <div class="save-note-container"> <button id="save-note-button" class="styled-button primary-button">Notu Kaydet</button> </div>
+                            <textarea id="personal-note-input" placeholder="Bu parfümle ilgili düşüncelerin..."
+                                aria-label="Kişisel Not"></textarea>
+                            <div class="save-note-container"> <button id="save-note-button"
+                                    class="styled-button primary-button">Notu Kaydet</button> </div>
                         </div>
                         <div class="save-note-container">
-                            <button id="online-search-button" class="styled-button secondary-button">🛍️ Online Ara & Fiyatları Karşılaştır</button>
+                            <button id="online-search-button" class="styled-button secondary-button">🛍️ Online Ara &
+                                Fiyatları Karşılaştır</button>
                         </div>
                     </div>
                 </div>
                 <div id="quiz-page" class="page"></div>
                 <div id="quiz-results-page" class="page"></div>
-                
+
                 <div id="privacy-policy-page" class="page">
                     <div class="header">
                         <button class="back-button action-button" aria-label="Geri">&lt; Geri</button>
@@ -110,35 +145,49 @@
                     <h2 class="accent" style="padding-top:15px; text-align:center;">Gizlilik Politikası</h2>
                     <div class="policy-content">
                         <p><em>Son Güncelleme: 27 Haziran 2025</em></p>
-                        <p>Bu gizlilik politikası, yasarlabs tarafından geliştirilen Parfüm Küratörü ("Uygulama") mobil uygulaması için geçerlidir.</p>
-                        
+                        <p>Bu gizlilik politikası, yasarlabs tarafından geliştirilen Parfüm Küratörü ("Uygulama") mobil
+                            uygulaması için geçerlidir.</p>
+
                         <h3>1. Toplanan Bilgiler</h3>
-                        <p>Uygulamamız, kullanıcı deneyimini kişiselleştirmek ve uygulamanın temel işlevlerini sunmak amacıyla yalnızca aşağıdaki verileri toplar ve saklar:</p>
+                        <p>Uygulamamız, kullanıcı deneyimini kişiselleştirmek ve uygulamanın temel işlevlerini sunmak
+                            amacıyla yalnızca aşağıdaki verileri toplar ve saklar:</p>
                         <ul>
-                            <li><strong>Kullanıcı Tarafından Girilen Veriler:</strong> Oluşturduğunuz liste adları, listelerinize eklediğiniz parfümler ve parfümler için yazdığınız kişisel notlar.</li>
-                            <li><strong>Otomatik Olarak Toplanan Veriler:</strong> Uygulama ayarlarınız (örneğin, açık/koyu tema seçimi).</li>
+                            <li><strong>Kullanıcı Tarafından Girilen Veriler:</strong> Oluşturduğunuz liste adları,
+                                listelerinize eklediğiniz parfümler ve parfümler için yazdığınız kişisel notlar.</li>
+                            <li><strong>Otomatik Olarak Toplanan Veriler:</strong> Uygulama ayarlarınız (örneğin,
+                                açık/koyu tema seçimi).</li>
                         </ul>
-                        <p><strong>Önemli Not:</strong> Tüm bu veriler, internet üzerindeki bir sunucuya gönderilmez; yalnızca sizin kendi cihazınızın tarayıcı belleğinde (localStorage teknolojisi ile) güvenli bir şekilde saklanır. Uygulamayı veya tarayıcı verilerini silmeniz durumunda bu bilgiler kalıcı olarak kaybolur.</p>
+                        <p><strong>Önemli Not:</strong> Tüm bu veriler, internet üzerindeki bir sunucuya gönderilmez;
+                            yalnızca sizin kendi cihazınızın tarayıcı belleğinde (localStorage teknolojisi ile) güvenli
+                            bir şekilde saklanır. Uygulamayı veya tarayıcı verilerini silmeniz durumunda bu bilgiler
+                            kalıcı olarak kaybolur.</p>
 
                         <h3>2. Bilgilerin Kullanımı</h3>
                         <p>Toplanan bu bilgiler, yalnızca aşağıdaki amaçlar için kullanılır:</p>
                         <ul>
                             <li>Uygulamanın çevrimdışı çalışabilmesini sağlamak.</li>
-                            <li>Oluşturduğunuz kişisel listeleri ve notları, uygulamayı her açtığınızda size tekrar sunmak.</li>
+                            <li>Oluşturduğunuz kişisel listeleri ve notları, uygulamayı her açtığınızda size tekrar
+                                sunmak.</li>
                             <li>Tercih ettiğiniz tema ayarını hatırlamak.</li>
                         </ul>
 
                         <h3>3. Bilgilerin Paylaşımı</h3>
-                        <p>Saklanan verileriniz hiçbir şekilde üçüncü taraflarla paylaşılmaz, satılmaz veya kiralanmaz. Verileriniz tamamen size aittir ve yalnızca kendi cihazınızda bulunur.</p>
+                        <p>Saklanan verileriniz hiçbir şekilde üçüncü taraflarla paylaşılmaz, satılmaz veya kiralanmaz.
+                            Verileriniz tamamen size aittir ve yalnızca kendi cihazınızda bulunur.</p>
 
                         <h3>4. Çocukların Gizliliği</h3>
-                        <p>Uygulamamız 13 yaşın altındaki çocuklara yönelik değildir ve bilerek onlardan kişisel bilgi toplamaz.</p>
+                        <p>Uygulamamız 13 yaşın altındaki çocuklara yönelik değildir ve bilerek onlardan kişisel bilgi
+                            toplamaz.</p>
 
                         <h3>5. Bu Gizlilik Politikasındaki Değişiklikler</h3>
-                        <p>Gizlilik politikamızı zaman zaman güncelleyebiliriz. Bu nedenle, herhangi bir değişiklik için bu sayfayı periyodik olarak gözden geçirmenizi öneririz. Değişiklikler bu sayfada yayınlandığı anda yürürlüğe girer.</p>
+                        <p>Gizlilik politikamızı zaman zaman güncelleyebiliriz. Bu nedenle, herhangi bir değişiklik için
+                            bu sayfayı periyodik olarak gözden geçirmenizi öneririz. Değişiklikler bu sayfada
+                            yayınlandığı anda yürürlüğe girer.</p>
 
                         <h3>6. İletişim</h3>
-                        <p>Gizlilik Politikamız hakkında herhangi bir sorunuz veya öneriniz varsa, lütfen bizimle şu adresten iletişime geçmekten çekinmeyin: <a href="mailto:parfumkuratoru@gmail.com">parfumkuratoru@gmail.com</a></p>
+                        <p>Gizlilik Politikamız hakkında herhangi bir sorunuz veya öneriniz varsa, lütfen bizimle şu
+                            adresten iletişime geçmekten çekinmeyin: <a
+                                href="mailto:parfumkuratoru@gmail.com">parfumkuratoru@gmail.com</a></p>
                     </div>
                 </div>
 
@@ -146,8 +195,8 @@
         </div>
 
         <div id="desktop-sidebar-right" class="desktop-sidebar">
-            </div>
-        
+        </div>
+
         <div id="toast-notification" aria-live="assertive"></div>
         <div id="add-to-list-modal" class="modal-overlay" aria-hidden="true">
             <div class="modal-content">
@@ -157,17 +206,17 @@
             </div>
         </div>
     </div>
-    
+
     <main id="main-content">
         <div id="quiz-promo-panel" class="frosted-panel">
-            </div>
+        </div>
         <div id="weekly-picks-panel" class="frosted-panel">
-            </div>
+        </div>
     </main>
 
     <footer id="global-footer">
-        <p>Bize Ulaşın: 
-            <a href="https://www.instagram.com/parfumkuratoru" target="_blank" rel="noopener noreferrer">Instagram</a> | 
+        <p>Bize Ulaşın:
+            <a href="https://www.instagram.com/parfumkuratoru" target="_blank" rel="noopener noreferrer">Instagram</a> |
             <a href="mailto:parfumkuratoru@gmail.com">parfumkuratoru@gmail.com</a>
         </p>
         <p>
@@ -175,7 +224,8 @@
         </p>
         <p>© 2025 Parfüm Küratörü. Tüm hakları saklıdır.</p>
     </footer>
-    
+
     <script type="module" src="/src/main.js"></script>
 </body>
+
 </html>
