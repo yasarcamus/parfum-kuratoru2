@@ -48,7 +48,8 @@ export const loadTranslationCache = (from, to) => {
 };
 
 /**
- * Translate text using MyMemory API
+ * Translate text using Google Translate (free API)
+ * Falls back to MyMemory if Google fails
  * @param {string} text - Text to translate
  * @param {string} from - Source language (tr, en, ru, ar)
  * @param {string} to - Target language (tr, en, ru, ar)
@@ -58,23 +59,39 @@ export const translateText = async (text, from = 'tr', to = 'en') => {
     // Return original if same language or empty
     if (!text || from === to) return text;
 
+    // Trim and check for very short text
+    const trimmedText = text.trim();
+    if (trimmedText.length < 2) return text;
+
     // Check cache first
-    const cached = getCachedTranslation(text, from, to);
-    if (cached) return cached;
+    const cached = getCachedTranslation(trimmedText, from, to);
+    if (cached) {
+        console.log('Translation from cache:', trimmedText.substring(0, 30));
+        return cached;
+    }
 
-    // Language code mapping for MyMemory
-    const langCodes = {
-        'tr': 'tr',
-        'en': 'en',
-        'ru': 'ru',
-        'ar': 'ar'
-    };
-
-    const fromCode = langCodes[from] || 'tr';
-    const toCode = langCodes[to] || 'en';
-
+    // Try Google Translate first
     try {
-        const url = `${MYMEMORY_API}?q=${encodeURIComponent(text)}&langpair=${fromCode}|${toCode}`;
+        const googleUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${from}&tl=${to}&dt=t&q=${encodeURIComponent(trimmedText)}`;
+        const response = await fetch(googleUrl);
+
+        if (response.ok) {
+            const data = await response.json();
+            if (data && data[0] && data[0][0] && data[0][0][0]) {
+                // Combine all translation parts
+                const translation = data[0].map(part => part[0]).join('');
+                console.log('Google Translate success:', trimmedText.substring(0, 30));
+                setCachedTranslation(trimmedText, from, to, translation);
+                return translation;
+            }
+        }
+    } catch (googleError) {
+        console.warn('Google Translate failed:', googleError.message);
+    }
+
+    // Fallback to MyMemory API
+    try {
+        const url = `${MYMEMORY_API}?q=${encodeURIComponent(trimmedText)}&langpair=${from}|${to}`;
         const response = await fetch(url);
 
         if (!response.ok) {
@@ -85,18 +102,18 @@ export const translateText = async (text, from = 'tr', to = 'en') => {
 
         if (data.responseStatus === 200 && data.responseData?.translatedText) {
             const translation = data.responseData.translatedText;
-            setCachedTranslation(text, from, to, translation);
+            console.log('MyMemory success:', trimmedText.substring(0, 30));
+            setCachedTranslation(trimmedText, from, to, translation);
             return translation;
         } else if (data.responseStatus === 429) {
-            // Rate limit exceeded
-            console.warn('Translation API rate limit exceeded');
+            console.warn('MyMemory rate limit exceeded');
             return text;
         } else {
-            console.warn('Translation failed:', data);
+            console.warn('MyMemory failed:', data);
             return text;
         }
     } catch (error) {
-        console.error('Translation error:', error);
+        console.error('All translation APIs failed:', error);
         return text; // Return original on error
     }
 };
