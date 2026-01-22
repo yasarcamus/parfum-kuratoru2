@@ -397,17 +397,8 @@ const showQuizResults = () => {
             perfumeCardWrapper.style.cursor = 'pointer';
             perfumeCardWrapper.style.animationDelay = `${index * 0.15}s`;
 
-            // Match percentage badge
-            const matchBadge = document.createElement('div');
-            matchBadge.className = 'match-badge';
-            matchBadge.innerHTML = `
-                <span class="match-percent">${result.percentage}%</span>
-                <span class="match-label">Uyum</span>
-            `;
-            perfumeCardWrapper.appendChild(matchBadge);
-
             if (storeMode && result.isStoreItem) {
-                // Enhanced store card
+                // Enhanced store card for QR access
                 const storeCard = document.createElement('div');
                 storeCard.className = 'store-perfume-card';
                 storeCard.innerHTML = `
@@ -431,7 +422,7 @@ const showQuizResults = () => {
                     });
                 };
             } else {
-                // Normal display
+                // Normal display - uses createPerfumeCard
                 createPerfumeCard(result.name, perfumeCardWrapper);
             }
 
