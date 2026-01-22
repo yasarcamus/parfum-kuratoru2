@@ -70,23 +70,40 @@ export const translateText = async (text, from = 'tr', to = 'en') => {
         return cached;
     }
 
-    // Try Google Translate first
+    // Try Google Translate first (via Lingva - CORS friendly proxy)
     try {
-        const googleUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${from}&tl=${to}&dt=t&q=${encodeURIComponent(trimmedText)}`;
-        const response = await fetch(googleUrl);
+        const lingvaUrl = `https://lingva.ml/api/v1/${from}/${to}/${encodeURIComponent(trimmedText)}`;
+        console.log('🌐 Trying Lingva...', trimmedText.substring(0, 30));
+        const response = await fetch(lingvaUrl);
 
         if (response.ok) {
             const data = await response.json();
-            if (data && data[0] && data[0][0] && data[0][0][0]) {
-                // Combine all translation parts
-                const translation = data[0].map(part => part[0]).join('');
-                console.log('Google Translate success:', trimmedText.substring(0, 30));
-                setCachedTranslation(trimmedText, from, to, translation);
-                return translation;
+            if (data && data.translation) {
+                console.log('✅ Lingva success:', trimmedText.substring(0, 30));
+                setCachedTranslation(trimmedText, from, to, data.translation);
+                return data.translation;
             }
         }
-    } catch (googleError) {
-        console.warn('Google Translate failed:', googleError.message);
+    } catch (lingvaError) {
+        console.warn('⚠️ Lingva failed:', lingvaError.message);
+    }
+
+    // Try alternative Lingva instance
+    try {
+        const altUrl = `https://translate.plausibility.cloud/api/v1/${from}/${to}/${encodeURIComponent(trimmedText)}`;
+        console.log('🌐 Trying alt Lingva...', trimmedText.substring(0, 30));
+        const response = await fetch(altUrl);
+
+        if (response.ok) {
+            const data = await response.json();
+            if (data && data.translation) {
+                console.log('✅ Alt Lingva success:', trimmedText.substring(0, 30));
+                setCachedTranslation(trimmedText, from, to, data.translation);
+                return data.translation;
+            }
+        }
+    } catch (altError) {
+        console.warn('⚠️ Alt Lingva failed:', altError.message);
     }
 
     // Fallback to MyMemory API
