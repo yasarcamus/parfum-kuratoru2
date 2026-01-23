@@ -15,24 +15,177 @@ const TAG_WEIGHTS = {
     character: 1     // Character traits
 };
 
-// Store inventory - perfumes available in physical store
+// Store inventory - perfumes with multi-language content
 // When accessed via QR code (?store=true), only these will be recommended
-// Each item has: storeName (custom name), reference (original perfume), gender
 const STORE_INVENTORY = [
-    { storeName: "TORINO", reference: "Xerjoff Torino 21", gender: "unisex", dbName: "Xerjoff Torino 21" },
-    { storeName: "SPORT", reference: "Dior Homme Sport", gender: "erkek", dbName: "Dior Homme Sport" },
-    { storeName: "CELESTIA", reference: "Maison Francis Kurkdjian Aqua Celestia", gender: "unisex", dbName: "Aqua Celestia" },
-    { storeName: "BLUEBELL", reference: "Jo Malone Wild Bluebell", gender: "kadın", dbName: "Jo Malone Wild Bluebell" },
-    { storeName: "SAVAGE", reference: "Dior Sauvage", gender: "erkek", dbName: "Dior Sauvage" },
-    { storeName: "EROS", reference: "Versace Eros", gender: "erkek", dbName: "Versace Eros" },
-    { storeName: "STRONGER", reference: "Emporio Armani Stronger With You", gender: "erkek", dbName: "Stronger With You" },
-    { storeName: "KIRKE", reference: "Tiziana Terenzi Kirke", gender: "unisex", dbName: "Kirke" },
-    { storeName: "AVENTUS", reference: "Creed Aventus", gender: "erkek", dbName: "Creed Aventus" },
-    { storeName: "ROUGE", reference: "Maison Francis Kurkdjian Baccarat Rouge 540", gender: "unisex", dbName: "Baccarat Rouge 540" },
-    { storeName: "CHERRY", reference: "Tom Ford Lost Cherry", gender: "unisex", dbName: "Lost Cherry" },
-    { storeName: "LIBRE", reference: "Yves Saint Laurent Libre", gender: "kadın", dbName: "Libre" },
-    { storeName: "BOMBSHELL", reference: "Victoria's Secret Bombshell", gender: "kadın", dbName: "Victoria's Secret Bombshell" },
-    { storeName: "EILISH", reference: "Billie Eilish Eilish", gender: "kadın", dbName: "Eilish" }
+    {
+        storeName: "TORINO",
+        reference: "Xerjoff Torino 21",
+        gender: "unisex",
+        dbName: "Xerjoff Torino 21",
+        vibe: {
+            tr: "İtalyan zarafeti ve modern şıklığın buluşması. Özel anlar için özel bir koku.",
+            en: "Italian elegance meets modern sophistication. A special scent for special moments.",
+            ru: "Итальянская элегантность встречает современную изысканность. Особый аромат для особых моментов.",
+            ar: "الأناقة الإيطالية تلتقي بالرقي الحديث. عطر خاص للحظات الخاصة."
+        }
+    },
+    {
+        storeName: "SPORT",
+        reference: "Dior Homme Sport",
+        gender: "erkek",
+        dbName: "Dior Homme Sport",
+        vibe: {
+            tr: "Dinamik ve enerjik. Aktif yaşam tarzı için mükemmel bir tercih.",
+            en: "Dynamic and energetic. The perfect choice for an active lifestyle.",
+            ru: "Динамичный и энергичный. Идеальный выбор для активного образа жизни.",
+            ar: "ديناميكي ومفعم بالطاقة. الخيار المثالي لنمط حياة نشط."
+        }
+    },
+    {
+        storeName: "CELESTIA",
+        reference: "MFK Aqua Celestia",
+        gender: "unisex",
+        dbName: "Aqua Celestia",
+        vibe: {
+            tr: "Gökyüzünün ferahlığı ve denizin serinliği bir arada.",
+            en: "The freshness of the sky and the coolness of the sea combined.",
+            ru: "Свежесть неба и прохлада моря в одном аромате.",
+            ar: "انتعاش السماء وبرودة البحر في عطر واحد."
+        }
+    },
+    {
+        storeName: "BLUEBELL",
+        reference: "Jo Malone Wild Bluebell",
+        gender: "kadın",
+        dbName: "Jo Malone Wild Bluebell",
+        vibe: {
+            tr: "Bahar ormanının taze ve çiçeksi kokusu. Doğal ve zarif.",
+            en: "The fresh floral scent of a spring forest. Natural and elegant.",
+            ru: "Свежий цветочный аромат весеннего леса. Естественный и элегантный.",
+            ar: "رائحة الأزهار المنعشة لغابة الربيع. طبيعي وأنيق."
+        }
+    },
+    {
+        storeName: "SAVAGE",
+        reference: "Dior Sauvage",
+        gender: "erkek",
+        dbName: "Dior Sauvage",
+        vibe: {
+            tr: "Vahşi ve özgür. Kendinden emin erkekler için.",
+            en: "Wild and free. For confident men.",
+            ru: "Дикий и свободный. Для уверенных в себе мужчин.",
+            ar: "متوحش وحر. للرجال الواثقين."
+        }
+    },
+    {
+        storeName: "EROS",
+        reference: "Versace Eros",
+        gender: "erkek",
+        dbName: "Versace Eros",
+        vibe: {
+            tr: "Güçlü ve baştan çıkarıcı. Aşk tanrısının kokusu.",
+            en: "Powerful and seductive. The scent of the god of love.",
+            ru: "Мощный и соблазнительный. Аромат бога любви.",
+            ar: "قوي ومغري. عطر إله الحب."
+        }
+    },
+    {
+        storeName: "STRONGER",
+        reference: "Armani Stronger With You",
+        gender: "erkek",
+        dbName: "Stronger With You",
+        vibe: {
+            tr: "Sıcak ve romantik. Seninle daha güçlü.",
+            en: "Warm and romantic. Stronger with you.",
+            ru: "Тёплый и романтичный. Сильнее с тобой.",
+            ar: "دافئ ورومانسي. أقوى معك."
+        }
+    },
+    {
+        storeName: "KIRKE",
+        reference: "Tiziana Terenzi Kirke",
+        gender: "unisex",
+        dbName: "Kirke",
+        vibe: {
+            tr: "Büyüleyici ve gizemli. Efsanevi bir koku deneyimi.",
+            en: "Enchanting and mysterious. A legendary scent experience.",
+            ru: "Очаровательный и загадочный. Легендарный ароматный опыт.",
+            ar: "ساحر وغامض. تجربة عطرية أسطورية."
+        }
+    },
+    {
+        storeName: "AVENTUS",
+        reference: "Creed Aventus",
+        gender: "erkek",
+        dbName: "Creed Aventus",
+        vibe: {
+            tr: "Zafer ve başarının kokusu. Liderler için.",
+            en: "The scent of victory and success. For leaders.",
+            ru: "Аромат победы и успеха. Для лидеров.",
+            ar: "عطر النصر والنجاح. للقادة."
+        }
+    },
+    {
+        storeName: "ROUGE",
+        reference: "MFK Baccarat Rouge 540",
+        gender: "unisex",
+        dbName: "Baccarat Rouge 540",
+        vibe: {
+            tr: "Lüks ve sofistike. Kristal şişenin içindeki sihir.",
+            en: "Luxurious and sophisticated. Magic inside a crystal bottle.",
+            ru: "Роскошный и утончённый. Магия в хрустальном флаконе.",
+            ar: "فاخر ومتطور. السحر داخل زجاجة كريستال."
+        }
+    },
+    {
+        storeName: "CHERRY",
+        reference: "Tom Ford Lost Cherry",
+        gender: "unisex",
+        dbName: "Lost Cherry",
+        vibe: {
+            tr: "Tatlı ve baştan çıkarıcı. Yasaklanmış meyvenin tadı.",
+            en: "Sweet and seductive. The taste of forbidden fruit.",
+            ru: "Сладкий и соблазнительный. Вкус запретного плода.",
+            ar: "حلو ومغري. طعم الفاكهة المحرمة."
+        }
+    },
+    {
+        storeName: "LIBRE",
+        reference: "YSL Libre",
+        gender: "kadın",
+        dbName: "Libre",
+        vibe: {
+            tr: "Özgür ve güçlü. Modern kadının manifestosu.",
+            en: "Free and powerful. The modern woman's manifesto.",
+            ru: "Свободный и мощный. Манифест современной женщины.",
+            ar: "حرة وقوية. بيان المرأة العصرية."
+        }
+    },
+    {
+        storeName: "BOMBSHELL",
+        reference: "VS Bombshell",
+        gender: "kadın",
+        dbName: "Victoria's Secret Bombshell",
+        vibe: {
+            tr: "Çekici ve özgüvenli. Her bakışı üzerine çeken.",
+            en: "Attractive and confident. Capturing every glance.",
+            ru: "Привлекательный и уверенный. Притягивает все взгляды.",
+            ar: "جذابة وواثقة. تأسر كل الأنظار."
+        }
+    },
+    {
+        storeName: "EILISH",
+        reference: "Billie Eilish Eilish",
+        gender: "kadın",
+        dbName: "Eilish",
+        vibe: {
+            tr: "Farklı ve cesur. Kendi kurallarını yazan.",
+            en: "Different and bold. Writing your own rules.",
+            ru: "Разный и смелый. Пишущий свои правила.",
+            ar: "مختلفة وجريئة. تكتب قواعدها الخاصة."
+        }
+    }
 ];
 
 // Get store item by database name
@@ -358,6 +511,7 @@ const showQuizResults = () => {
     const page = document.getElementById('quiz-results-page');
     const recommendedPerfumes = calculateQuizScores();
     const storeMode = isStoreMode();
+    const currentLang = getCurrentLanguage();
 
     state.userStats.quizzesTaken++;
     saveStats();
@@ -366,80 +520,89 @@ const showQuizResults = () => {
     window.lastQuizResults = recommendedPerfumes;
     window.fromQuizResults = true;
 
-    // Enhanced results page with celebration design
-    page.innerHTML = `
-        <div class="quiz-results-header">
-            <div class="confetti-container">
-                <span class="confetti">🎉</span>
-                <span class="confetti">✨</span>
-                <span class="confetti">🌟</span>
+    // Get top result only for store mode
+    const topResult = recommendedPerfumes[0];
+
+    if (storeMode && topResult && topResult.isStoreItem) {
+        // Store Mode: Single result, dominant design
+        const storeItem = STORE_INVENTORY.find(item => item.storeName === topResult.storeName);
+        const vibeText = storeItem?.vibe?.[currentLang] || storeItem?.vibe?.tr || '';
+
+        // Gender translation
+        const genderText = {
+            erkek: { tr: 'Erkek', en: 'Men', ru: 'Мужской', ar: 'رجالي' },
+            kadın: { tr: 'Kadın', en: 'Women', ru: 'Женский', ar: 'نسائي' },
+            unisex: { tr: 'Unisex', en: 'Unisex', ru: 'Унисекс', ar: 'للجنسين' }
+        };
+        const genderLabel = genderText[topResult.gender]?.[currentLang] || topResult.gender;
+
+        page.innerHTML = `
+            <div class="store-result-page">
+                <h1 class="store-result-title">SENİN İÇİN SEÇTİK</h1>
+                
+                <div class="store-result-card">
+                    <div class="store-result-name">${topResult.storeName}</div>
+                    <div class="store-result-divider"></div>
+                    <div class="store-result-reference">${topResult.reference}</div>
+                    <div class="store-result-gender">${genderLabel}</div>
+                    <p class="store-result-vibe">"${vibeText}"</p>
+                </div>
+                
+                <div class="store-result-actions">
+                    <button id="restart-quiz-button" class="styled-button secondary-button">
+                        ${t('restartQuiz')}
+                    </button>
+                </div>
             </div>
-            <h2 class="results-title">${storeMode ? '🎁 Senin İçin Seçtik!' : t('quizResultsTitle')}</h2>
-            <p class="results-subtitle">${storeMode ? 'Koku profiline en uygun parfümler' : t('quizResultsDescription')}</p>
-        </div>
-        <div id="quiz-results-container" class="results-grid"></div>
-        <div class="results-actions">
-            <button id="restart-quiz-button" class="styled-button secondary-button">
-                🔄 ${t('restartQuiz')}
-            </button>
-            <button id="back-home-button" class="styled-button primary-button">
-                🏠 ${t('backToHome')}
-            </button>
-        </div>
-    `;
+        `;
 
-    const container = page.querySelector('#quiz-results-container');
-
-    if (recommendedPerfumes.length > 0) {
-        recommendedPerfumes.forEach((result, index) => {
-            const perfumeCardWrapper = document.createElement('div');
-            perfumeCardWrapper.className = 'quiz-result-wrapper';
-            perfumeCardWrapper.style.cursor = 'pointer';
-            perfumeCardWrapper.style.animationDelay = `${index * 0.15}s`;
-
-            if (storeMode && result.isStoreItem) {
-                // Enhanced store card for QR access
-                const storeCard = document.createElement('div');
-                storeCard.className = 'store-perfume-card';
-                storeCard.innerHTML = `
-                    <div class="store-card-inner">
-                        <div class="store-name">${result.storeName}</div>
-                        <div class="store-divider"></div>
-                        <div class="store-reference">İlham: ${result.reference}</div>
-                        <div class="store-meta">
-                            <span class="store-gender">${result.gender === 'erkek' ? '👔 Erkek' : result.gender === 'kadın' ? '👗 Kadın' : '✨ Unisex'}</span>
-                        </div>
-                        <div class="store-vibe">"${state.parfum_veritabani[result.name]?.vibe?.substring(0, 60) || ''}..."</div>
-                        <div class="store-cta">👆 Detaylar için dokun</div>
-                    </div>
-                `;
-                perfumeCardWrapper.appendChild(storeCard);
-
-                // Click to open detail page
-                perfumeCardWrapper.onclick = () => {
-                    import('./ui.js').then(module => {
-                        module.renderDetailPage(result.name);
-                    });
-                };
-            } else {
-                // Normal display - uses createPerfumeCard
-                createPerfumeCard(result.name, perfumeCardWrapper);
-            }
-
-            container.appendChild(perfumeCardWrapper);
-        });
+        page.querySelector('#restart-quiz-button').onclick = () => {
+            window.fromQuizResults = false;
+            startQuiz();
+        };
     } else {
-        container.innerHTML = `<p class="no-results">${t('noResults')}</p>`;
+        // Normal Mode: Multiple results from full database
+        page.innerHTML = `
+            <div class="quiz-results-header">
+                <h2 class="results-title">${t('quizResultsTitle')}</h2>
+                <p class="results-subtitle">${t('quizResultsDescription')}</p>
+            </div>
+            <div id="quiz-results-container" class="results-grid"></div>
+            <div class="results-actions">
+                <button id="restart-quiz-button" class="styled-button secondary-button">
+                    ${t('restartQuiz')}
+                </button>
+                <button id="back-home-button" class="styled-button primary-button">
+                    ${t('backToHome')}
+                </button>
+            </div>
+        `;
+
+        const container = page.querySelector('#quiz-results-container');
+
+        if (recommendedPerfumes.length > 0) {
+            recommendedPerfumes.forEach((result, index) => {
+                const perfumeCardWrapper = document.createElement('div');
+                perfumeCardWrapper.className = 'quiz-result-wrapper';
+                perfumeCardWrapper.style.cursor = 'pointer';
+                perfumeCardWrapper.style.animationDelay = `${index * 0.15}s`;
+                createPerfumeCard(result.name, perfumeCardWrapper);
+                container.appendChild(perfumeCardWrapper);
+            });
+        } else {
+            container.innerHTML = `<p class="no-results">${t('noResults')}</p>`;
+        }
+
+        page.querySelector('#restart-quiz-button').onclick = () => {
+            window.fromQuizResults = false;
+            startQuiz();
+        };
+        page.querySelector('#back-home-button').onclick = () => {
+            window.fromQuizResults = false;
+            showPage('home-page');
+        };
     }
 
-    page.querySelector('#restart-quiz-button').onclick = () => {
-        window.fromQuizResults = false;
-        startQuiz();
-    };
-    page.querySelector('#back-home-button').onclick = () => {
-        window.fromQuizResults = false;
-        showPage('home-page');
-    };
     showPage('quiz-results-page');
 };
 
